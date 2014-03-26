@@ -1,0 +1,23 @@
+/// <reference path="{back}sdk/definitions/phaser.d.ts"/>
+/// <reference path="{back}sdk/definitions/zapcoder.d.ts"/>
+
+export class {name} extends Zapcoder.Entities.Components.Component {
+
+    {properties}
+
+    constructor(config) {
+        super(config);
+        {set_properties}
+    }
+
+    init(entity) {
+        super.init(entity);
+        // Add initialization code here
+    }
+
+    update() {
+        // Add update code here
+    }
+}
+
+Zap.components.register('{name}', {name});

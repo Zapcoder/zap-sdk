@@ -1,0 +1,11 @@
+{
+    "name": "UpwardsForceController",
+    "module": "Demo.Input",
+    "properties": [
+        {
+            "name": "upwardsAcc",
+            "type": "number",
+            "value": "100"
+        }
+    ]
+}

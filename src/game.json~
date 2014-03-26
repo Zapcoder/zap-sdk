@@ -1,0 +1,136 @@
+{
+    "name": "Zappy plane",
+    "assets": {
+        "img": {
+            "Basketball": "/assets/img/Basketball.png",
+            "starGold": "/assets/img/starGold.png",
+            "planes.planeBlue1": "/assets/img/planes/planeBlue1.png",
+            "planes.planeBlue2": "/assets/img/planes/planeBlue2.png",
+            "planes.planeBlue3": "/assets/img/planes/planeBlue3.png",
+            "planes.planeGreen2": "/assets/img/planes/planeGreen2.png",
+            "planes.planeGreen1": "/assets/img/planes/planeGreen1.png",
+            "planes.planeGreen3": "/assets/img/planes/planeGreen3.png",
+            "planes.planeRed1": "/assets/img/planes/planeRed1.png",
+            "planes.planeRed3": "/assets/img/planes/planeRed3.png",
+            "planes.planeRed2": "/assets/img/planes/planeRed2.png",
+            "planes.planeYellow1": "/assets/img/planes/planeYellow1.png",
+            "planes.planeYellow2": "/assets/img/planes/planeYellow2.png",
+            "planes.planeYellow3": "/assets/img/planes/planeYellow3.png",
+            "scenery.puffLarge": "/assets/img/scenery/puffLarge.png",
+            "scenery.background": "/assets/img/scenery/background.png",
+            "scenery.puffSmall": "/assets/img/scenery/puffSmall.png",
+            "scenery.rockGrass": "/assets/img/scenery/rockGrass.png",
+            "scenery.groundGrass": "/assets/img/scenery/groundGrass.png"
+        },
+        "audio": {},
+        "fonts": {}
+    },
+    "objects": {
+        "plane": {
+            "components": [
+                {
+                    "img": "planes.planeRed1",
+                    "group": "plane",
+                    "outOfBoundsKill": true,
+                    "collideBounds": true,
+                    "type": "Zapcoder.Entities.Components.Sprite"
+                },
+                {
+                    "upwardsAcc": "2000",
+                    "type": "ZP.Input.UpwardsForceController"
+                },
+                {
+                    "gravity": "1000",
+                    "type": "ZP.Physics.Gravity"
+                },
+                {
+                    "type": "ZP.PlayerCollision"
+                }
+            ]
+        },
+        "background": {
+            "components": [
+                {
+                    "image": "scenery.background",
+                    "speed": "-100",
+                    "group": "background",
+                    "type": "ZP.Graphics.ScrollingSprite"
+                }
+            ]
+        },
+        "ground": {
+            "components": [
+                {
+                    "image": "scenery.groundGrass",
+                    "speed": "-200",
+                    "group": "ground",
+                    "type": "ZP.Graphics.ScrollingSprite"
+                }
+            ]
+        },
+        "worldManager": {
+            "global": {
+                "speed": -300
+            },
+            "components": [
+                {
+                    "ground": "ground",
+                    "type": "ZP.Managers.GroundManager"
+                },
+                {
+                    "image": "scenery.rockGrass",
+                    "group": "gate",
+                    "space": 300,
+                    "frequency": 5,
+                    "type": "ZP.Managers.GateManager"
+                }
+            ]
+        }
+    },
+    "states": {
+        "game": {
+            "objects": [
+                {
+                    "type": "background",
+                    "pos": {
+                        "x": 0,
+                        "y": 0
+                    }
+                },
+                {
+                    "type": "plane",
+                    "pos": {
+                        "x": "left",
+                        "y": "middle"
+                    }
+                },
+                {
+                    "type": "worldManager"
+                }
+            ],
+            "groups": [
+                "plane",
+                "gate",
+                "ground",
+                "goal"
+            ],
+            "collisions": [
+                {
+                    "groups": [
+                        "plane",
+                        "ground"
+                    ],
+                    "type": "overlap"
+                },
+                {
+                    "groups": [
+                        "plane",
+                        "gate"
+                    ],
+                    "type": "overlap"
+                }
+            ]
+        }
+    },
+    "start": "game"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "GateManager",
+    "module": "Demo.Managers",
+    "properties": [
+        {
+            "name": "speed",
+            "type": "number",
+            "value": "-100"
+        },
+        {
+            "name": "frequency",
+            "type": "number",
+            "value": 5
+        },
+        {
+            "name": "group",
+            "type": "string",
+            "value": "'gate'"
+        }
+    ]
+}

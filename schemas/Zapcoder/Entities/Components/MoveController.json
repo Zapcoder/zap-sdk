@@ -1,0 +1,30 @@
+{
+    "name": "MoveController",
+    "properties": [
+        {
+            "name": "speed",
+            "type": "number",
+            "value": 200
+        },
+        {
+            "name": "left",
+            "type": "string",
+            "value": "LEFT"
+        },
+        {
+            "name": "right",
+            "type": "string",
+            "value": "RIGHT"
+        },
+        {
+            "name": "up",
+            "type": "string",
+            "value": "UP"
+        },
+        {
+            "name": "down",
+            "type": "string",
+            "value": "DOWN"
+        }
+    ]
+}

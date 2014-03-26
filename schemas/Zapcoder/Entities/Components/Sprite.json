@@ -1,0 +1,25 @@
+{
+    "name": "Sprite",
+    "properties": [
+        {
+            "name": "img",
+            "type": "string",
+            "value": null
+        },
+        {
+            "name": "group",
+            "type": "string",
+            "value": null
+        },
+        {
+            "name": "outOfBoundsKill",
+            "type": "boolean",
+            "value": true
+        },
+        {
+            "name": "collideBounds",
+            "type": "boolean",
+            "value": "false"
+        }
+    ]
+}

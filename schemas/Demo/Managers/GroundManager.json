@@ -1,0 +1,16 @@
+{
+    "name": "GroundManager",
+    "module": "Demo.Managers",
+    "properties": [
+        {
+            "name": "speed",
+            "type": "number",
+            "value": "-100"
+        },
+        {
+            "name": "ground",
+            "type": "string",
+            "value": "'ground'"
+        }
+    ]
+}

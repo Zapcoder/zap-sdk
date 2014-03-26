@@ -1,0 +1,11 @@
+{
+    "name": "Gravity",
+    "module": "Demo.Physics",
+    "properties": [
+        {
+            "name": "gravity",
+            "type": "number",
+            "value": "100"
+        }
+    ]
+}

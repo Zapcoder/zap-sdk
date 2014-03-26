@@ -1,0 +1,21 @@
+{
+    "name": "ScrollingSprite",
+    "module": "Demo.Graphics",
+    "properties": [
+        {
+            "name": "image",
+            "type": "string",
+            "value": "null"
+        },
+        {
+            "name": "speed",
+            "type": "number",
+            "value": "-100"
+        },
+        {
+            "name": "group",
+            "type": "string",
+            "value": "null"
+        }
+    ]
+}

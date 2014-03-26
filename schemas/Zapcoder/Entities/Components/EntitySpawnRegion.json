@@ -1,0 +1,25 @@
+{
+    "name": "EntitySpawnRegion",
+    "properties": [
+        {
+            "name": "entity",
+            "type": "string",
+            "value": null
+        },
+        {
+            "name": "width",
+            "type": "number",
+            "value": 960
+        },
+        {
+            "name": "height",
+            "type": "number",
+            "value": 640
+        },
+        {
+            "name": "spawnOnEvent",
+            "type": "string",
+            "value": null
+        }
+    ]
+}

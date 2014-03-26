@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zapcoder SDK</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+</head>
+<body>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/lib/engine.min.js"></script> 
+    <script src="js/game.js"></script>
+    <script>
+        (function($){
+            $(document).ready(function() {
+                $.get('./game.json', function(data) {
+                    Zap.start(data, null, {firstName: 'Mr', lastName: 'Bison'});
+                });
+            });
+        }(jQuery));
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+    "name": "Gun",
+    "properties": [
+        {
+            "name": "speed",
+            "type": "number",
+            "value": 100
+        },
+        {
+            "name": "entity",
+            "type": "string",
+            "value": null
+        },
+        {
+            "name": "rate",
+            "type": "number",
+            "value": 300
+        }
+    ]
+}
