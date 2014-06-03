@@ -31,19 +31,15 @@ exports.EncodedImageAssetBuilder = function(){
 		var offset = 0;
 		var b = new Buffer(8 + this._keySize + this._dataSize);
 
-		util.debug('image - key size: '+this._keySize);
 		b.writeUInt16BE(this._keySize, offset); 
 		offset += 2; 
 
-		util.debug('image - key: '+this._key);
 		b.write(this._key, offset, this._keySize);
 		offset += this._keySize
 
-		util.debug('image - id: '+this._id);
 		b.writeUInt16BE(this._id, offset);      
 		offset += 2;
 
-		util.debug('image - data size: '+this._dataSize);
 		b.writeUInt32BE(this._dataSize, offset);
 		offset += 4;
 		
@@ -95,34 +91,74 @@ exports.EncodedFontAssetBuilder = function() {
 		var offset = 0;
 		var b = new Buffer(14 + this._imageSize + this._dataSize + this._keySize);
 
-		util.debug('font - key size: '+this._keySize);
 		b.writeUInt16BE(this._keySize, offset); 
 		offset += 2; 
 
-		util.debug('font - key: '+this._key);
 		b.write(this._key, offset, this._keySize);
 		offset += this._keySize
 
-		util.debug('font - imageId: '+this._imageId);
 		b.writeUInt16BE(this._imageId, offset);      
 		offset += 2;
 
-		util.debug('font - image size: '+this._imageSize);
 		b.writeUInt32BE(this._imageSize, offset);
 		offset += 4;
 
 		this._data.copy(b, offset);
 		offset += this._dataSize;
 
-		util.debug('font - dataId: '+this._dataId);
 		b.writeUInt16BE(this._dataId, offset);      
 		offset += 2;
 
-		util.debug('font - data size: '+this._dataSize);
 		b.writeUInt32BE(this._dataSize, offset);
 		offset += 4;
 
 		this._data.copy(b, offset);
+		return b;
+	}
+}
+
+exports.EncodedAudioAssetBuilder = function() {
+	this._id = null;
+	this._audioSize = 0;
+	this._audio = null;
+	this._key = null;
+	this._keySize = 0;
+
+	this.id = function(id) {
+		this._id = id;
+		return this;
+	}
+
+	this.key = function(key) {
+		this._key = key;
+		this._keySize = Buffer.byteLength(key, 'utf8');
+		return this;
+	}
+
+	this.audio = function(audio) {
+		this._audio = fs.readFileSync(path.join(__dirname, '..', '..', 'src', audio));
+		this._audioSize = this._audio.length;
+		return this;
+	}
+
+	this.encode = function() {
+		var offset = 0;
+		var b = new Buffer(8 + this._keySize + this._audioSize);
+
+		b.writeUInt16BE(this._keySize, offset); 
+		offset += 2; 
+
+		b.write(this._key, offset, this._keySize);
+		offset += this._keySize
+
+		b.writeUInt16BE(this._id, offset);      
+		offset += 2;
+
+		b.writeUInt32BE(this._audioSize, offset);
+		offset += 4;
+		
+		this._audio.copy(b, offset);
+
 		return b;
 	}
 }

@@ -8,26 +8,27 @@ var fs = require('fs')
   , util = require('../util.js')
   , config = require('../../src/game.json')
   , buildDir = './build'
-  , buildFile = 'build.zap'
+  , buildFile = config.name + '.zap'
   , assetId = 0
   , sections = {
-  	images: 0x00,
-  	fonts: 0x01,
-  	audio: 0x02,
+  	images: 0x0001,
+  	fonts: 0x0002,
+  	audio: 0x0003,
+  	config: 0x0004,
+  	code: 0x0005
   }
   , currentData = []
   , buffers = []
-  , stream
-  , zstream;
+  , stream;
 
 exports.buildGame = function() {
 	mkdirp(buildDir, function(err) {
 		stream = fs.createWriteStream(path.join(buildDir, buildFile));
-		zstream = fs.createWriteStream(path.join(buildDir, buildFile) + '.gz');
 		processImages();
 		processFonts();
 		processAudio();
-
+		processConfig();
+		processCode();
 		buildFiles();
 	});
 }
@@ -35,7 +36,8 @@ exports.buildGame = function() {
 
 function processImages() {
 	var images = config.assets.img
-	  , buffers = [];
+	  , buffers = []
+	  , count = 0;
 
 	beginSection('images');
 
@@ -46,17 +48,20 @@ function processImages() {
 			var data = encoder.id(id).key(key).image(images[key]).encode();
 			buffers.push(data);
 
+
 			images[key] = id;
+			util.log('Processed '+ (++count) + '/'+Object.keys(images).length+' images', null, true);
 		}
 	}
-
+	util.nl();
 	writeContent(Buffer.concat(buffers));
 	endSection();
 }
 
 function processFonts() {
 	var fonts = config.assets.fonts
-	  , buffers = [];
+	  , buffers = []
+	  , count = 0;
 
 	beginSection('fonts');
 
@@ -71,16 +76,59 @@ function processFonts() {
 
 			fonts[key].image = imageId;
 			fonts[key].data = dataId;
+			util.log('Processed '+ (++count) + '/'+Object.keys(fonts).length+' fonts', null, true);
 		}
 	}
-
+	util.nl();
 	writeContent(Buffer.concat(buffers));
 
 	endSection();
 }
 
 function processAudio() {
+	var audio = config.assets.audio
+	  , buffers = []
+	  , count = 0;
 
+	beginSection('audio');
+
+	for(var key in audio) {
+		if(audio.hasOwnProperty(key)) {
+			var id = assetId++;
+			var encoder = new assetEncoders.EncodedAudioAssetBuilder();
+			var data = encoder.id(id).key(key).audio(audio[key]).encode();
+			buffers.push(data);
+
+			audio[key] = id;
+			util.log('Processed '+ (++count) + '/'+Object.keys(audio).length+' tracks', null, true);
+		}
+	}
+	util.nl();
+	writeContent(Buffer.concat(buffers));
+	endSection();
+}
+
+function processConfig() {
+	beginSection('config');
+
+	var conf = JSON.stringify(config, null, 2);
+	var b = new Buffer(conf);
+	writeContent(b);
+
+	util.log('Processed game configuration');
+
+	endSection();
+}
+
+function processCode() {
+	beginSection('code');
+	var code = fs.readFileSync(path.join('src', 'js', 'game.js'));
+	var b = new Buffer(code);
+	writeContent(code);
+
+	util.log('Processed game code');
+
+	endSection();
 }
 
 function writeContent(content) {
@@ -92,8 +140,8 @@ function writeContent(content) {
 
 function beginSection(section) {
 	currentData = [];
-	var b = new Buffer(1);
-	b.writeUInt8(sections[section], 0);
+	var b = new Buffer(2);
+	b.writeUInt16BE(sections[section], 0);
 	currentData.push(b);
 }
 
@@ -106,20 +154,17 @@ function endSection() {
 }
 
 function buildFiles() {
-	// Outputing raw and compresses while testing
 	var b = Buffer.concat(buffers);
 	var md5 = crypto.createHash('md5').update(b).digest();
-	stream.write(b);
-	stream.end();
 
 	zlib.gzip(b, function(err, buf) {
 		if(err) {
 			console.log(err);  return;
 		}
-		console.log(md5);
-		zstream.write(md5);
-		zstream.write(buf);
-		zstream.end();
+		stream.write(md5);
+		stream.write(buf);
+		stream.end();
+		util.created(path.join(buildDir, buildFile));
 	});
 }
 

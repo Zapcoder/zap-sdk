@@ -50,9 +50,17 @@ exports.compareArrays = function(arr1, arr2) {
     return false;
 }
 
-exports.log = function(message, pre){
+exports.log = function(message, pre, sameline){
     var pre = pre ? exports.styles.syntax(pre+': ') : '';
-    console.log('['+exports.styles.syntax('ZAP')+'] '+pre+message);
+    if(sameline) {
+        process.stdout.write('\r['+exports.styles.syntax('ZAP')+'] '+pre+message);
+    } else {
+        console.log('['+exports.styles.syntax('ZAP')+'] '+pre+message);
+    }
+}
+
+exports.nl = function() {
+    process.stdout.write('\n');
 }
 
 exports.debug = function(message) {

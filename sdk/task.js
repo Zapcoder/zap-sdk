@@ -26,10 +26,6 @@ exports.options = {
     build: {
         description: 'Build your game (Creates a .zip file ready for uploading to Zap)',
         call: build.buildGame
-    },
-    test: {
-        description: 'Build your game (Creates a .zip file ready for uploading to Zap)',
-        call: build.test
     }
 }
 
