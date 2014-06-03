@@ -2,6 +2,7 @@ var gulp = require('gulp')
   , connect = require('gulp-connect')
   , typescript = require('gulp-tsc')
   , concat = require('gulp-concat')
+  , build = require('./builder/builder.js')
   , paths = {
         ts: './typescript/**/*.ts',
         config: './src/game.json',
@@ -21,6 +22,14 @@ exports.options = {
     compile: {
         description: 'Compile typescript files',
         call: compileTypescript
+    },
+    build: {
+        description: 'Build your game (Creates a .zip file ready for uploading to Zap)',
+        call: build.buildGame
+    },
+    test: {
+        description: 'Build your game (Creates a .zip file ready for uploading to Zap)',
+        call: build.test
     }
 }
 

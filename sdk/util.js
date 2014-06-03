@@ -1,5 +1,7 @@
 var chalk = require('chalk');
 
+var DEBUG = true;
+
 exports.repeat = function(s, n) {
     var a = [];
     while(a.length < n) {
@@ -51,6 +53,11 @@ exports.compareArrays = function(arr1, arr2) {
 exports.log = function(message, pre){
     var pre = pre ? exports.styles.syntax(pre+': ') : '';
     console.log('['+exports.styles.syntax('ZAP')+'] '+pre+message);
+}
+
+exports.debug = function(message) {
+    if(DEBUG)
+        exports.log(message, 'DEBUG');
 }
 
 exports.created = function(filename) {
