@@ -42,7 +42,7 @@ exports.EncodedImageAssetBuilder = function(){
 
 		b.writeUInt32BE(this._dataSize, offset);
 		offset += 4;
-		
+
 		this._data.copy(b, offset);
 
 		return b;
@@ -103,8 +103,8 @@ exports.EncodedFontAssetBuilder = function() {
 		b.writeUInt32BE(this._imageSize, offset);
 		offset += 4;
 
-		this._data.copy(b, offset);
-		offset += this._dataSize;
+		this._image.copy(b, offset);
+		offset += this._imageSize;
 
 		b.writeUInt16BE(this._dataId, offset);      
 		offset += 2;
@@ -113,6 +113,7 @@ exports.EncodedFontAssetBuilder = function() {
 		offset += 4;
 
 		this._data.copy(b, offset);
+
 		return b;
 	}
 }

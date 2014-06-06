@@ -4,9 +4,11 @@ var fs = require('fs')
   , dir = require('node-dir')
   , zlib = require('zlib')
   , crypto = require('crypto')
+  , prompt = require('prompt')
   , assetEncoders = require('./asset-encoders.js')
   , util = require('../util.js')
   , config = require('../../src/game.json')
+  , connection = require('../remote/connection.js')
   , buildDir = './build'
   , buildFile = config.name + '.zap'
   , assetId = 0
@@ -33,6 +35,55 @@ exports.buildGame = function() {
 	});
 }
 
+/*
+exports.deployGame = function() {
+	var userData = connection.user();
+	if(userData) {
+		util.log('You are logged in as '+userData.user[0].username);
+		var properties = {
+	        cont: {
+                validator: '^(n|N|y|Y)$',
+                warning: util.styles.warning('Please enter either Y or N'),
+	        	required: true,
+	            message: util.styles.prompt("Change user? (Y/N)")
+	        }
+	    };
+		prompt.start();
+
+		prompt.get({properties: properties}, function(err, result) {
+	        if(err) throw err;
+	        if(result.cont.toUpperCase() == 'N') {
+	        	deploy(userData.user);
+	        } else {
+	        	connection.logout();
+		        connection.prompt(function(res) {
+					if(res == false) {
+						util.log('Login failed!');
+						return;
+					}
+					deploy(res.user);
+				});
+	    	}
+	    });
+	} else {
+		util.log('You need to login to continue');
+		connection.prompt(function(res) {
+			if(res == false) {
+				util.log('Login failed!');
+				return;
+			}
+			deploy(res.user);
+		});
+	}
+}
+
+function deploy(user) {
+	exports.buildGame(function() {
+		var stream = fs.createReadStream(path.join(buildDir, buildFile));
+		connection.streamFile(stream, 'files/graphics');
+	});
+}
+*/
 
 function processImages() {
 	var images = config.assets.img
@@ -40,7 +91,7 @@ function processImages() {
 	  , count = 0;
 
 	beginSection('images');
-
+	util.log((count) + '/'+Object.keys(images).length+' images', 'Processed', true);
 	for(var key in images) {
 		if(images.hasOwnProperty(key)) {
 			var id = assetId++;
@@ -50,7 +101,7 @@ function processImages() {
 
 
 			images[key] = id;
-			util.log('Processed '+ (++count) + '/'+Object.keys(images).length+' images', null, true);
+			util.log((++count) + '/'+Object.keys(images).length+' images', 'Processed', true);
 		}
 	}
 	util.nl();
@@ -64,7 +115,7 @@ function processFonts() {
 	  , count = 0;
 
 	beginSection('fonts');
-
+	util.log((count) + '/'+Object.keys(fonts).length+' fonts', 'Processed', true);
 	for(var key in fonts) {
 		if(fonts.hasOwnProperty(key)) {
 			var imageId = assetId++;
@@ -76,7 +127,7 @@ function processFonts() {
 
 			fonts[key].image = imageId;
 			fonts[key].data = dataId;
-			util.log('Processed '+ (++count) + '/'+Object.keys(fonts).length+' fonts', null, true);
+			util.log((++count) + '/'+Object.keys(fonts).length+' fonts', 'Processed', true);
 		}
 	}
 	util.nl();
@@ -91,7 +142,7 @@ function processAudio() {
 	  , count = 0;
 
 	beginSection('audio');
-
+	util.log((count) + '/'+Object.keys(audio).length+' tracks', 'Processed', true);
 	for(var key in audio) {
 		if(audio.hasOwnProperty(key)) {
 			var id = assetId++;
@@ -100,7 +151,7 @@ function processAudio() {
 			buffers.push(data);
 
 			audio[key] = id;
-			util.log('Processed '+ (++count) + '/'+Object.keys(audio).length+' tracks', null, true);
+			util.log((++count) + '/'+Object.keys(audio).length+' tracks', 'Processed', true);
 		}
 	}
 	util.nl();
@@ -111,28 +162,38 @@ function processAudio() {
 function processConfig() {
 	beginSection('config');
 
-	var conf = JSON.stringify(config, null, 2);
-	var b = new Buffer(conf);
+	var conf = new Buffer(JSON.stringify(config, null, 2));
+	var b = new Buffer(conf.length + 4);
+
+	b.writeUInt32BE(conf.length, 0);
+	conf.copy(b, 4);
+
 	writeContent(b);
 
-	util.log('Processed game configuration');
+	util.log('Game configuration', 'Processed');
 
 	endSection();
 }
 
 function processCode() {
 	beginSection('code');
-	var code = fs.readFileSync(path.join('src', 'js', 'game.js'));
-	var b = new Buffer(code);
-	writeContent(code);
 
-	util.log('Processed game code');
+	var code = new Buffer(fs.readFileSync(path.join('src', 'js', 'game.js')));
+	var b = new Buffer(code.length + 4);
+
+	b.writeUInt32BE(code.length, 0);
+	code.copy(b, 4);
+
+	writeContent(b);
+
+	util.log('Game code', 'Processed');
 
 	endSection();
 }
 
 function writeContent(content) {
 	var data = new Buffer(4 + content.length);
+	console.log(content.length);
 	data.writeUInt32BE(content.length, 0);
 	content.copy(data, 4);
 	currentData.push(data);
@@ -155,42 +216,22 @@ function endSection() {
 
 function buildFiles() {
 	var b = Buffer.concat(buffers);
+	console.log(b.slice(b.length - 10, b.length));
 	var md5 = crypto.createHash('md5').update(b).digest();
-
+	var stream2 = fs.createWriteStream(path.join(buildDir, buildFile)+'.open');
+	stream2.write(b);
+	stream2.end();
 	zlib.gzip(b, function(err, buf) {
 		if(err) {
 			console.log(err);  return;
 		}
+
 		stream.write(md5);
 		stream.write(buf);
 		stream.end();
 		util.created(path.join(buildDir, buildFile));
+
+		b = null;
+		buffers = [];
 	});
 }
-
-/**
-
-.zap structure
-
-Assets
-- Images
-- Audio
-- Fonts
-JS
-CONFIG
-
-*/
-
-/*
-
-Image
-- Id (8b)
-- Format (4b)
-- - 0 (.png)
-- - 1 (.jpg)
-- - 2 (.jpeg)
-- - 3 (.gif)
-- Size (32b)
-- Data
-
-*/
