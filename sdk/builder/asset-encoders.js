@@ -124,6 +124,8 @@ exports.EncodedAudioAssetBuilder = function() {
 	this._audio = null;
 	this._key = null;
 	this._keySize = 0;
+	this._format = null;
+	this._formatSize = 0;
 
 	this.id = function(id) {
 		this._id = id;
@@ -137,6 +139,8 @@ exports.EncodedAudioAssetBuilder = function() {
 	}
 
 	this.audio = function(audio) {
+		this._format = audio.substring(audio.lastIndexOf('.')+1);
+		this._formatSize = Buffer.byteLength(this._format, 'utf8');
 		this._audio = fs.readFileSync(path.join(__dirname, '..', '..', 'src', audio));
 		this._audioSize = this._audio.length;
 		return this;
@@ -144,7 +148,7 @@ exports.EncodedAudioAssetBuilder = function() {
 
 	this.encode = function() {
 		var offset = 0;
-		var b = new Buffer(8 + this._keySize + this._audioSize);
+		var b = new Buffer(10 + this._keySize + this._audioSize + this._formatSize);
 
 		b.writeUInt16BE(this._keySize, offset); 
 		offset += 2; 
@@ -159,6 +163,12 @@ exports.EncodedAudioAssetBuilder = function() {
 		offset += 4;
 		
 		this._audio.copy(b, offset);
+		offset += this._audioSize;
+
+		b.writeUInt16BE(this._formatSize, offset);
+		offset += 2;
+
+		b.write(this._format, offset, this._formatSize);
 
 		return b;
 	}

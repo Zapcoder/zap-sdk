@@ -35,56 +35,6 @@ exports.buildGame = function() {
 	});
 }
 
-/*
-exports.deployGame = function() {
-	var userData = connection.user();
-	if(userData) {
-		util.log('You are logged in as '+userData.user[0].username);
-		var properties = {
-	        cont: {
-                validator: '^(n|N|y|Y)$',
-                warning: util.styles.warning('Please enter either Y or N'),
-	        	required: true,
-	            message: util.styles.prompt("Change user? (Y/N)")
-	        }
-	    };
-		prompt.start();
-
-		prompt.get({properties: properties}, function(err, result) {
-	        if(err) throw err;
-	        if(result.cont.toUpperCase() == 'N') {
-	        	deploy(userData.user);
-	        } else {
-	        	connection.logout();
-		        connection.prompt(function(res) {
-					if(res == false) {
-						util.log('Login failed!');
-						return;
-					}
-					deploy(res.user);
-				});
-	    	}
-	    });
-	} else {
-		util.log('You need to login to continue');
-		connection.prompt(function(res) {
-			if(res == false) {
-				util.log('Login failed!');
-				return;
-			}
-			deploy(res.user);
-		});
-	}
-}
-
-function deploy(user) {
-	exports.buildGame(function() {
-		var stream = fs.createReadStream(path.join(buildDir, buildFile));
-		connection.streamFile(stream, 'files/graphics');
-	});
-}
-*/
-
 function processImages() {
 	var images = config.assets.img
 	  , buffers = []
@@ -193,7 +143,6 @@ function processCode() {
 
 function writeContent(content) {
 	var data = new Buffer(4 + content.length);
-	console.log(content.length);
 	data.writeUInt32BE(content.length, 0);
 	content.copy(data, 4);
 	currentData.push(data);
@@ -216,11 +165,7 @@ function endSection() {
 
 function buildFiles() {
 	var b = Buffer.concat(buffers);
-	console.log(b.slice(b.length - 10, b.length));
 	var md5 = crypto.createHash('md5').update(b).digest();
-	var stream2 = fs.createWriteStream(path.join(buildDir, buildFile)+'.open');
-	stream2.write(b);
-	stream2.end();
 	zlib.gzip(b, function(err, buf) {
 		if(err) {
 			console.log(err);  return;
