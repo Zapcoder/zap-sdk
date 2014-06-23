@@ -1,6 +1,7 @@
 var fs = require('fs')
   , dir = require('node-dir')
   , util = require('../util.js')
+  , dotaccess = require('dotaccess');
 
 var imgDir = './src/assets/img';
 var update = false;
@@ -17,6 +18,8 @@ exports.sync = function(data, callback) {
         for(var i = 0; i < files.length; i++ ){
             var file = files[i].replace(/^src/, '');
 
+            if(file.indexOf('.DS_Store') !== -1) continue;
+
             var name = file.replace(/^\/assets\/img\//,'').replace(/\..+$/, '').replace('/', '.');
 
             var fileFound = false;
@@ -31,7 +34,7 @@ exports.sync = function(data, callback) {
             if(!fileFound) {
                 util.log(name+' --> '+file, 'Synced');
                 update = true;
-                img[name] = file;
+                dotaccess.set(img, name, file);
             }
         }
 

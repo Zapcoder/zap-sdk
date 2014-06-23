@@ -38,22 +38,25 @@ exports.buildGame = function() {
 function processImages() {
 	var images = config.assets.img
 	  , buffers = []
-	  , count = 0;
+	  , count = 0
+	  , flatImages = util.flattenObject(images);
 
 	beginSection('images');
-	util.log((count) + '/'+Object.keys(images).length+' images', 'Processed', true);
-	for(var key in images) {
-		if(images.hasOwnProperty(key)) {
-			var id = assetId++;
-			var encoder = new assetEncoders.EncodedImageAssetBuilder();
-			var data = encoder.id(id).key(key).image(images[key]).encode();
-			buffers.push(data);
 
+	util.log((count) + '/'+Object.keys(flatImages).length+' images', 'Processed', true);
 
-			images[key] = id;
-			util.log((++count) + '/'+Object.keys(images).length+' images', 'Processed', true);
-		}
-	}
+	util.foreach(flatImages, function(key, value) {
+		var id = assetId++;
+		var encoder = new assetEncoders.EncodedImageAssetBuilder();
+		var data = encoder.id(id).key(key).image(value).encode();
+		buffers.push(data);
+
+		flatImages[key] = id;
+		util.log((++count) + '/'+Object.keys(flatImages).length+' images', 'Processed', true);
+	})
+		
+	config.assets.img = flatImages;
+
 	util.nl();
 	writeContent(Buffer.concat(buffers));
 	endSection();
@@ -62,24 +65,39 @@ function processImages() {
 function processFonts() {
 	var fonts = config.assets.fonts
 	  , buffers = []
-	  , count = 0;
+	  , count = 0
+	  , matchedFonts = []
+	  , flatFonts = util.flattenObject(fonts);
 
 	beginSection('fonts');
-	util.log((count) + '/'+Object.keys(fonts).length+' fonts', 'Processed', true);
-	for(var key in fonts) {
-		if(fonts.hasOwnProperty(key)) {
-			var imageId = assetId++;
-			var dataId = assetId++;
-			var encoder = new assetEncoders.EncodedFontAssetBuilder();
-			var data = encoder.imageId(imageId).image(fonts[key].image)
-				.dataId(dataId).data(fonts[key].data).key(key).encode();
-			buffers.push(data);
 
-			fonts[key].image = imageId;
-			fonts[key].data = dataId;
-			util.log((++count) + '/'+Object.keys(fonts).length+' fonts', 'Processed', true);
-		}
-	}
+	util.log((count) + '/'+Object.keys(flatFonts).length+' fonts', 'Processed', true);
+
+	util.foreach(flatFonts, function(key, value) {
+
+		var name = key.replace('.image', '').replace('.data', '');
+
+		if( matchedFonts.indexOf(name) !== -1 ) return true;
+
+		var imageId = assetId++;
+		var dataId = assetId++;
+
+		matchedFonts.push(name);
+
+		var encoder = new assetEncoders.EncodedFontAssetBuilder();
+
+		var data = encoder.imageId(imageId).image(flatFonts[name+'.image'])
+			.dataId(dataId).data(flatFonts[name+'.data']).key(name).encode();
+		buffers.push(data);
+
+		flatFonts[name+'.image'] = imageId;
+		flatFonts[name+'.data'] = dataId;
+		util.log((++count) + '/'+Object.keys(flatFonts).length+' fonts', 'Processed', true);
+
+	});
+
+	config.assets.fonts = flatFonts;
+
 	util.nl();
 	writeContent(Buffer.concat(buffers));
 
@@ -89,21 +107,26 @@ function processFonts() {
 function processAudio() {
 	var audio = config.assets.audio
 	  , buffers = []
-	  , count = 0;
+	  , count = 0
+	  , flatAudio = util.flattenObject(audio);
 
 	beginSection('audio');
 	util.log((count) + '/'+Object.keys(audio).length+' tracks', 'Processed', true);
-	for(var key in audio) {
-		if(audio.hasOwnProperty(key)) {
-			var id = assetId++;
-			var encoder = new assetEncoders.EncodedAudioAssetBuilder();
-			var data = encoder.id(id).key(key).audio(audio[key]).encode();
-			buffers.push(data);
+	
+	util.foreach(flatAudio, function(key, value) {
 
-			audio[key] = id;
-			util.log((++count) + '/'+Object.keys(audio).length+' tracks', 'Processed', true);
-		}
-	}
+		var id = assetId++;
+		var encoder = new assetEncoders.EncodedAudioAssetBuilder();
+		var data = encoder.id(id).key(key).audio(value[0]).encode();
+		buffers.push(data);
+
+		flatAudio[key] = id;
+		util.log((++count) + '/'+Object.keys(flatAudio).length+' tracks', 'Processed', true);
+
+	});
+
+	config.assets.audio = flatAudio;
+
 	util.nl();
 	writeContent(Buffer.concat(buffers));
 	endSection();

@@ -96,6 +96,41 @@ var Demo;
     Zap.components.register('Demo.PlayerCollision', Demo.PlayerCollision);
 })(Demo || (Demo = {}));
 
+/// <reference path="../../sdk/definitions/phaser.d.ts"/>
+/// <reference path="../../sdk/definitions/zapcoder.d.ts"/>
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Demo;
+(function (Demo) {
+    var SmokeEmitter = (function (_super) {
+        __extends(SmokeEmitter, _super);
+        function SmokeEmitter(config) {
+            _super.call(this, config);
+        }
+        SmokeEmitter.prototype.init = function (entity) {
+            _super.prototype.init.call(this, entity);
+            this.emitter = Zap.engine.game.add.emitter(entity.sprite.x, entity.sprite.y, 100);
+            this.emitter.makeParticles(['megusta']);
+            this.emitter.gravity = 10;
+            this.emitter.start(false, 3000, 2);
+        };
+
+        SmokeEmitter.prototype.update = function () {
+            this.emitter.emitX = this.entity.sprite.x;
+            this.emitter.emitY = this.entity.sprite.y;
+            // Add update code here
+        };
+        return SmokeEmitter;
+    })(Zapcoder.Entities.Components.Component);
+    Demo.SmokeEmitter = SmokeEmitter;
+
+    Zap.components.register('Demo.SmokeEmitter', Demo.SmokeEmitter);
+})(Demo || (Demo = {}));
+
 /// <reference path="../../../sdk/definitions/phaser.d.ts"/>
 /// <reference path="../../../sdk/definitions/zapcoder.d.ts"/>
 var __extends = this.__extends || function (d, b) {
@@ -179,6 +214,7 @@ var Demo;
             function UpwardsForceController(config) {
                 _super.call(this, config);
                 this.upwardsAcc = +config.upwardsAcc || 100;
+                this.offset = 0;
             }
             UpwardsForceController.prototype.init = function (entity) {
                 _super.prototype.init.call(this, entity);
@@ -192,6 +228,8 @@ var Demo;
                     this.acceleration.y = 0;
 
                 this.entity.sprite.angle = Zap.math.clamp(-90, 90, this.entity.sprite.body.velocity.y / 20);
+                this.offset += 10;
+                this.entity.sprite.angle += this.offset;
             };
             return UpwardsForceController;
         })(Zapcoder.Entities.Components.Component);

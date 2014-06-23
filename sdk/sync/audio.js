@@ -1,6 +1,7 @@
 var fs = require('fs')
   , dir = require('node-dir')
-  , util = require('../util.js');
+  , util = require('../util.js')
+  , dotaccess = require('dotaccess');
 
 var audioDir = './src/assets/audio';
 
@@ -20,10 +21,14 @@ exports.sync = function(data, callback){
     dir.files(audioDir, function(err, files) {
         for(var i = 0; i < files.length; i++) {
             var file = files[i].replace(/^src/, '');
+
+            if(file.indexOf('.DS_Store') !== -1) continue;
+
             var name = file.replace(/^\/assets\/audio\//,'').replace(/\..+$/, '').replace('/', '.');
 
             addAudioData(name, file);
         }
+
         syncAudioData();
 
         if(update) {
@@ -49,8 +54,15 @@ exports.sync = function(data, callback){
 
 function syncAudioData() {
     var fileFound = false;
-    util.foreach(audio, function(key, value) {
-        util.foreach(gameAudio, function(key2, value2) {
+
+    var flatAudio = util.flattenObject(audio);
+
+    var flatGameAudio = util.flattenObject(gameAudio);
+
+    util.foreach(flatAudio, function(key, value) {
+
+        util.foreach(flatGameAudio, function(key2, value2) {
+
             if( util.compareArrays(value, value2) ) {
                 fileFound = true;
                 util.log(value+ ' --> already exists "'+key2+'"', 'Skipping');
@@ -58,7 +70,7 @@ function syncAudioData() {
         });
 
         if(!fileFound) {
-            gameAudio[key] = value;
+            dotaccess.set(gameAudio, key, value);
             util.log(key + ' --> ' + value, 'Synced');
             update = true;
         }
@@ -66,8 +78,10 @@ function syncAudioData() {
 }
 
 function addAudioData(name, file) {
-    if(!audio[name]) {
-        audio[name] = [];
+
+    if(!dotaccess.get(audio, name)) {
+        dotaccess.set(audio, name, []);
     }
-    audio[name].push(file);
+    dotaccess.get(audio, name).push(file);
+
 }

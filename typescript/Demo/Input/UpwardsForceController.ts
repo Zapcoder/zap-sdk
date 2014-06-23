@@ -7,11 +7,12 @@ module Demo.Input {
 
         public upwardsAcc: number;
 	    private acceleration: Phaser.Point;	
+        private offset: number;
 
         constructor(config) {
             super(config);
             this.upwardsAcc = +config.upwardsAcc || 100;
-			
+			this.offset = 0;
         }
 
         init(entity) {
@@ -26,6 +27,8 @@ module Demo.Input {
                 this.acceleration.y = 0;
 
             this.entity.sprite.angle = Zap.math.clamp(-90, 90, this.entity.sprite.body.velocity.y / 20);
+            this.offset += 10;
+            this.entity.sprite.angle += this.offset;
         }
     }
 

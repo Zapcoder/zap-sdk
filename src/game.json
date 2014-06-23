@@ -1,26 +1,78 @@
 {
-    "name": "Zappy plane",
+    "name": "Magusta Remixable",
     "assets": {
         "img": {
-            "planes.planeRed1": "/assets/img/planes/planeRed1.png",
-            "scenery.background": "/assets/img/scenery/background.png",
-            "scenery.rockGrass": "/assets/img/scenery/rockGrass.png",
-            "scenery.groundGrass": "/assets/img/scenery/groundGrass.png"
-        },
-        "audio": {},
-        "fonts": {
-            "desyrel": {
-                "image": "/assets/fonts/desyrel.png",
-                "data": "/assets/fonts/desyrel.xml"
+            "Basketball": "/assets/img/Basketball.png",
+            "megusta": "/assets/img/megusta.png",
+            "starGold": "/assets/img/starGold.png",
+            "scenery": {
+                "background": "/assets/img/scenery/background.png",
+                "groundGrass": "/assets/img/scenery/groundGrass.png",
+                "puffLarge": "/assets/img/scenery/puffLarge.png",
+                "puffSmall": "/assets/img/scenery/puffSmall.png",
+                "rockGrass": "/assets/img/scenery/rockGrass.png"
             },
+            "planes": {
+                "planeBlue1": "/assets/img/planes/planeBlue1.png",
+                "planeBlue2": "/assets/img/planes/planeBlue2.png",
+                "planeBlue3": "/assets/img/planes/planeBlue3.png",
+                "planeGreen1": "/assets/img/planes/planeGreen1.png",
+                "planeGreen2": "/assets/img/planes/planeGreen2.png",
+                "planeGreen3": "/assets/img/planes/planeGreen3.png",
+                "planeRed1": "/assets/img/planes/planeRed1.png",
+                "planeRed2": "/assets/img/planes/planeRed2.png",
+                "planeRed3": "/assets/img/planes/planeRed3.png",
+                "planeYellow1": "/assets/img/planes/planeYellow1.png",
+                "planeYellow2": "/assets/img/planes/planeYellow2.png",
+                "planeYellow3": "/assets/img/planes/planeYellow3.png"
+            }
+        },
+        "audio": {
+            "afolter": {
+                "song": [
+                    "/assets/audio/afolter/song.mp3"
+                ]
+            }
+        },
+        "fonts": {
             "font": {
                 "image": "/assets/fonts/font.png",
                 "data": "/assets/fonts/font.xml"
+            },
+            "AFolder": {
+                "desyrel": {
+                    "image": "/assets/fonts/AFolder/desyrel.png",
+                    "data": "/assets/fonts/AFolder/desyrel.xml"
+                }
             }
         }
     },
     "objects": {
         "plane": {
+            "exposed": {
+                "name": "Plane",
+                "Sprite": {
+                    "img": "planes.planeRed1"
+                },
+                "behaviours": {
+                    "Up Force": {
+                        "value": "this.components.control.upwardsAcc",
+                        "type": {
+                            "name": "range",
+                            "min": 1000,
+                            "max": 4000
+                        }
+                    },
+                    "Gravity": {
+                        "value": "this.components.grav.gravity",
+                        "type": {
+                            "name": "range",
+                            "min": 200,
+                            "max": 3000
+                        }
+                    }
+                }
+            },
             "components": [
                 {
                     "img": "planes.planeRed1",
@@ -31,20 +83,42 @@
                 },
                 {
                     "upwardsAcc": "2000",
+                    "id": "control",
                     "type": "Demo.Input.UpwardsForceController"
                 },
                 {
                     "gravity": "1000",
+                    "id": "grav",
                     "type": "Demo.Physics.Gravity"
                 },
                 {
                     "type": "Demo.PlayerCollision"
+                },
+                {
+                    "type": "Demo.SmokeEmitter"
                 }
             ]
         },
         "background": {
+            "exposed": {
+                "name": "World",
+                "Sprite": {
+                    "img": "scenery.background"
+                },
+                "behaviours": {
+                    "Scroll Speed": {
+                        "value": "this.components.bg.speed",
+                        "type": {
+                            "name": "range",
+                            "min": -3000,
+                            "max": -50
+                        }
+                    }
+                }
+            },
             "components": [
                 {
+                    "id": "bg",
                     "image": "scenery.background",
                     "speed": "-100",
                     "group": "background",

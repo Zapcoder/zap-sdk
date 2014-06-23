@@ -1,6 +1,7 @@
 var fs = require('fs')
   , dir = require('node-dir')
-  , util = require('../util.js');
+  , util = require('../util.js')
+  , dotaccess = require('dotaccess');
 
 var fontDir = './src/assets/fonts';
 
@@ -18,6 +19,9 @@ exports.sync = function(data, callback){
     dir.files(fontDir, function(err, files) {
         for(var i = 0; i < files.length; i++) {
             var file = files[i].replace(/^src/, '');
+
+            if(file.indexOf('.DS_Store') !== -1) continue;
+
             var name = file.replace(/^\/assets\/fonts\//,'').replace(/\..+$/, '').replace('/', '.');
             var type = file.match(/\..+$/);
 
@@ -57,32 +61,70 @@ exports.sync = function(data, callback){
 }
 
 function processFonts() {
-    for( var name in fonts ) {
-        if(fonts.hasOwnProperty(name)) {
-            if(fonts[name].data && fonts[name].image) {
-                var fileFound = false;
-                util.foreach(gameFonts, function(key, value) {
-                    if(fonts[name].data == value.data && fonts[name].image == value.image) {
+
+    var flatFonts = util.flattenObject(fonts);
+    var flatGameFonts = util.flattenObject(gameFonts);
+
+    util.foreach(flatFonts, function(key, value) {
+
+        var name = '';
+        fileFound = false;
+
+        if(key.indexOf('.image' !== -1)) {
+
+            var matchingKey = key.replace('.image', '.data');
+            name = key.replace('.image', '');
+
+            if(typeof flatFonts[matchingKey] !== 'undefined') {
+
+                util.foreach(flatGameFonts, function(key2, value2) {
+
+                    if(flatFonts[key] == flatGameFonts[key] && flatFonts[matchingKey] == flatGameFonts[matchingKey]) {
                         fileFound = true;
-                        util.log(fonts[name].data + ' - ' + fonts[name].image + ' --> already exists "'+name+'"', 'Skipping');
+                        util.log(dotaccess.get(fonts, key) + ' - ' + dotaccess.get(fonts, matchingKey) + ' --> already exists "'+ name +'"', 'Skipping');
+                        return false;
+                    }
+                });
+            
+                delete flatFonts[matchingKey];
+            }
+
+
+        } else if( key.indexOf('.data' !== -1)) {
+
+            var matchingKey = key.replace('.data', '.image');
+            name = key.replace('.data', '');
+
+            if(typeof flatFonts[matchingKey] !== 'undefined') {
+
+                util.foreach(flatGameFonts, function(key2, value2) {
+
+                    if(flatFonts[key] == flatGameFonts[key] && flatFonts[matchingKey] == flatGameFonts[matchingKey]) {
+
+                        fileFound = true;
+                        util.log(dotaccess.get(fonts, matching) + ' - ' + dotaccess.get(fonts, key) + ' --> already exists "'+ name +'"', 'Skipping');
                         return false;
                     }
                 });
 
-                if(!fileFound) {
-                    util.log(name +' --> '+fonts[name].image+' - '+fonts[name].data, 'Synced');
-                    update = true;
-                    gameFonts[name] = fonts[name];
-                }
+                delete flatFonts[matchingKey];
             }
+
         }
-    }
+
+        if(!fileFound) {
+            util.log(name +' --> '+dotaccess.get(fonts, name).image+' - '+dotaccess.get(fonts, name).data, 'Synced');
+            update = true;
+            dotaccess.set(gameFonts, name, dotaccess.get(fonts, name));
+        }
+    });
+
 }
 
 function addFontData(name, key, val) {
-    if(!fonts[name]) {
-        fonts[name] = {};
+    if(!dotaccess.get(fonts, name)) {
+        dotaccess.set(fonts, name, {});
     }
-    fonts[name][key] = val;
+    dotaccess.get(fonts, name)[key] = val;
 
 }
