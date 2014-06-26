@@ -1,44 +1,19 @@
 {
-    "name": "Magusta Remixable",
+    "name": "Zap test game",
     "assets": {
         "img": {
-            "Basketball": "/assets/img/Basketball.png",
             "megusta": "/assets/img/megusta.png",
-            "starGold": "/assets/img/starGold.png",
             "scenery": {
                 "background": "/assets/img/scenery/background.png",
                 "groundGrass": "/assets/img/scenery/groundGrass.png",
-                "puffLarge": "/assets/img/scenery/puffLarge.png",
-                "puffSmall": "/assets/img/scenery/puffSmall.png",
                 "rockGrass": "/assets/img/scenery/rockGrass.png"
             },
             "planes": {
-                "planeBlue1": "/assets/img/planes/planeBlue1.png",
-                "planeBlue2": "/assets/img/planes/planeBlue2.png",
-                "planeBlue3": "/assets/img/planes/planeBlue3.png",
-                "planeGreen1": "/assets/img/planes/planeGreen1.png",
-                "planeGreen2": "/assets/img/planes/planeGreen2.png",
-                "planeGreen3": "/assets/img/planes/planeGreen3.png",
-                "planeRed1": "/assets/img/planes/planeRed1.png",
-                "planeRed2": "/assets/img/planes/planeRed2.png",
-                "planeRed3": "/assets/img/planes/planeRed3.png",
-                "planeYellow1": "/assets/img/planes/planeYellow1.png",
-                "planeYellow2": "/assets/img/planes/planeYellow2.png",
-                "planeYellow3": "/assets/img/planes/planeYellow3.png"
+                "planeRed1": "/assets/img/planes/planeRed1.png"
             }
         },
-        "audio": {
-            "afolter": {
-                "song": [
-                    "/assets/audio/afolter/song.mp3"
-                ]
-            }
-        },
+        "audio": {},
         "fonts": {
-            "font": {
-                "image": "/assets/fonts/font.png",
-                "data": "/assets/fonts/font.xml"
-            },
             "AFolder": {
                 "desyrel": {
                     "image": "/assets/fonts/AFolder/desyrel.png",
