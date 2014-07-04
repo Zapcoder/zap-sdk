@@ -14,6 +14,9 @@ var Demo;
         }
         Gate.prototype.createTop = function (offset) {
             this.top = Zap.engine.game.add.sprite(Zap.engine.game.width + 100, 0, this.manager.image);
+
+            Zap.engine.game.physics.enable(this.top);
+
             this.top.entity = this.manager.entity;
 
             this.top.anchor.setTo(0.5, 0.5);
@@ -25,6 +28,9 @@ var Demo;
 
         Gate.prototype.createGoal = function () {
             this.goal = Zap.engine.game.add.sprite(Zap.engine.game.width + 100 + this.top.width, 0);
+
+            Zap.engine.game.physics.enable(this.goal);
+
             this.goal.height = Zap.engine.game.height;
             this.goal.entity = this.manager.entity;
             this.goal.body.x = this.goal.x;
@@ -33,6 +39,9 @@ var Demo;
 
         Gate.prototype.createBottom = function (offset) {
             this.bottom = Zap.engine.game.add.sprite(Zap.engine.game.width + 100, 0, this.manager.image);
+
+            Zap.engine.game.physics.enable(this.bottom);
+
             this.bottom.entity = this.manager.entity;
 
             this.bottom.anchor.setTo(0.5, 0.5);
@@ -71,7 +80,6 @@ var Demo;
         PlayerCollision.prototype.init = function (entity) {
             _super.prototype.init.call(this, entity);
 
-            // Add initialization code here
             entity.events.listen('collision.ground', function (e) {
                 Zap.engine.lose();
             });
@@ -87,7 +95,6 @@ var Demo;
         };
 
         PlayerCollision.prototype.update = function () {
-            // Add update code here
         };
         return PlayerCollision;
     })(Zapcoder.Entities.Components.Component);
@@ -114,15 +121,19 @@ var Demo;
         SmokeEmitter.prototype.init = function (entity) {
             _super.prototype.init.call(this, entity);
             this.emitter = Zap.engine.game.add.emitter(entity.sprite.x, entity.sprite.y, 100);
-            this.emitter.makeParticles(['megusta']);
+            this.emitter.makeParticles(['particles.smoke']);
             this.emitter.gravity = 10;
+            this.emitter.alpha = 0.4;
+            this.emitter.minParticleSpeed = new Phaser.Point(-300, -250);
+            this.emitter.maxParticleSpeed = new Phaser.Point(-150, -150);
+            this.emitter.setAlpha(0.8, 0, 3000);
+            this.emitter.setScale(0.8, 3, 0.8, 3, 3000);
             this.emitter.start(false, 3000, 2);
         };
 
         SmokeEmitter.prototype.update = function () {
             this.emitter.emitX = this.entity.sprite.x;
             this.emitter.emitY = this.entity.sprite.y;
-            // Add update code here
         };
         return SmokeEmitter;
     })(Zapcoder.Entities.Components.Component);
@@ -180,7 +191,9 @@ var Demo;
                 while (this.width < Zap.engine.game.width * 2 && this.sprites.length < 2) {
                     var sprite = Zap.engine.game.add.sprite(this.entity.pos.x + this.width, this.entity.pos.y, this.image, 0, this.entity.manager.groups[this.group]);
 
-                    sprite.updateBounds();
+                    Zap.engine.game.physics.enable(sprite);
+
+                    sprite.body.updateBounds();
                     sprite.body.velocity = this.velocity;
                     sprite.entity = this.entity;
 
@@ -228,7 +241,7 @@ var Demo;
                     this.acceleration.y = 0;
 
                 this.entity.sprite.angle = Zap.math.clamp(-90, 90, this.entity.sprite.body.velocity.y / 20);
-                this.offset += 10;
+                this.offset += 3;
                 this.entity.sprite.angle += this.offset;
             };
             return UpwardsForceController;
@@ -266,6 +279,10 @@ var Demo;
             }
             GateManager.prototype.init = function (entity) {
                 _super.prototype.init.call(this, entity);
+
+                Zap.engine.game.sound.stopAll();
+                this.music = Zap.engine.game.add.audio('afolter.song', 1, true);
+                this.music.play();
             };
 
             GateManager.prototype.update = function () {

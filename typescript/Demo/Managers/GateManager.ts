@@ -15,6 +15,8 @@ module Demo.Managers {
 		private currentTime: number = 0;
 		private gates: Demo.Gate[] = [];
 
+        private music;
+
         constructor(config) {
             super(config);
             this.speed = +config.speed || -100;
@@ -26,6 +28,11 @@ module Demo.Managers {
 
         init(entity) {
             super.init(entity);
+
+            Zap.engine.game.sound.stopAll();
+            this.music = Zap.engine.game.add.audio('afolter.song', 1, true);
+            this.music.play();
+
         }
 
         update() {

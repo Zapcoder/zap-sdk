@@ -27,7 +27,7 @@ module Demo.Input {
                 this.acceleration.y = 0;
 
             this.entity.sprite.angle = Zap.math.clamp(-90, 90, this.entity.sprite.body.velocity.y / 20);
-            this.offset += 10;
+            this.offset += 3;
             this.entity.sprite.angle += this.offset;
         }
     }

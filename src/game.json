@@ -1,12 +1,15 @@
 {
-    "name": "Zap test game",
+    "name": "Rocket Plane",
     "assets": {
         "img": {
-            "megusta": "/assets/img/megusta.png",
             "scenery": {
                 "background": "/assets/img/scenery/background.png",
                 "groundGrass": "/assets/img/scenery/groundGrass.png",
                 "rockGrass": "/assets/img/scenery/rockGrass.png"
+            },
+            "particles": {
+                "smoke": "/assets/img/particles/particles_smoke.png",
+                "particles_smoke": "/assets/img/particles/particles_smoke.png"
             },
             "planes": {
                 "planeRed1": "/assets/img/planes/planeRed1.png"
@@ -152,9 +155,8 @@
                 },
                 {
                     "type": "ScoreDisplay",
-                    "style": {
-                        "font": "36px Desyrel"
-                    },
+                    "font": "AFolder.desyrel",
+                    "size": 48,
                     "pos": {
                         "x": "center",
                         "y": 5

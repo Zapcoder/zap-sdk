@@ -21,6 +21,9 @@ module Demo {
 
         createTop(offset) {
             this.top = Zap.engine.game.add.sprite(Zap.engine.game.width + 100, 0, this.manager.image);
+
+            Zap.engine.game.physics.enable(this.top);
+
             this.top.entity = this.manager.entity;
 
             this.top.anchor.setTo(0.5, 0.5);
@@ -32,6 +35,9 @@ module Demo {
 
         createGoal(){
             this.goal = Zap.engine.game.add.sprite(Zap.engine.game.width + 100 + this.top.width, 0);
+
+            Zap.engine.game.physics.enable(this.goal);
+
             this.goal.height = Zap.engine.game.height;
             this.goal.entity = this.manager.entity;
             this.goal.body.x = this.goal.x;
@@ -40,6 +46,9 @@ module Demo {
 
         createBottom(offset) {
             this.bottom = Zap.engine.game.add.sprite(Zap.engine.game.width + 100, 0, this.manager.image);
+
+            Zap.engine.game.physics.enable(this.bottom);
+
             this.bottom.entity = this.manager.entity;
 
             this.bottom.anchor.setTo(0.5, 0.5);

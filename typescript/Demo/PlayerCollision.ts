@@ -13,8 +13,9 @@ module Demo {
         }
 
         init(entity) {
+
             super.init(entity);
-            // Add initialization code here
+
             entity.events.listen('collision.ground', function(e) {
                 Zap.engine.lose();
             });
@@ -30,7 +31,7 @@ module Demo {
         }
 
         update() {
-            // Add update code here
+            
         }
     }
 

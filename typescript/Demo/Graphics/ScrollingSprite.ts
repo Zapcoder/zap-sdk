@@ -54,7 +54,9 @@ module Demo.Graphics {
                         this.entity.manager.groups[this.group]
                     );
 
-                sprite.updateBounds();
+                Zap.engine.game.physics.enable(sprite);
+
+                sprite.body.updateBounds();
                 sprite.body.velocity = this.velocity;
                 sprite.entity = this.entity;
 
