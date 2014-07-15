@@ -71,11 +71,14 @@ declare module Zapcoder {
 
     module Input {
         class Controller {
-            button: Button;             
-            thumbstick: Thumbstick;
+            right;             
+            left;
+            setRight(touchable);
+            setLeft(touchable);
         }
 
         class Touchable {
+            constructor( controller );
             controller: Controller; 
             active: boolean;    
             activeInput;
@@ -167,6 +170,8 @@ declare module Zapcoder {
         min(a:number, b:number);
         max(a:number, b:number);
         clamp(min:number, max:number, value:number);
+        radToDeg(rad:number);
+        degToRad(deg:number);
     }
 }
 
