@@ -1,7 +1,7 @@
 /// <reference path="{back}sdk/definitions/phaser.d.ts"/>
 /// <reference path="{back}sdk/definitions/zapcoder.d.ts"/>
 
-export class {name} extends Zapcoder.Entities.Components.Component {
+class {name} extends Zapcoder.Entities.Components.Component {
 
     {properties}
 
