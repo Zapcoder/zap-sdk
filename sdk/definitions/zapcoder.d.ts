@@ -136,6 +136,11 @@ declare module Zapcoder {
             entities: Zapcoder.Entities.EntityManager;
             collisions: Zapcoder.Collisions.CollisionManager;
         }
+
+        class StateManager {
+            start(key);
+            get(key);
+        }
     }
 
     module Util {
@@ -159,6 +164,8 @@ declare module Zapcoder {
         controller: Zapcoder.Input.Controller;
         session: Zapcoder.Session.Session;
         screen: Zapcoder.Util.Screen;
+        state: Zapcoder.States.StateManager;
+        restart();
         win();
         lose();
     }
