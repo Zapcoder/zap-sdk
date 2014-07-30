@@ -15,6 +15,11 @@
             "name": "rate",
             "type": "number",
             "value": 300
+        },
+        {
+            "name": "sound",
+            "type": "string",
+            "value": null
         }
     ]
 }
