@@ -36,7 +36,8 @@ module Demo.Graphics {
                     }
                 }
                 else {
-                    if(sprite.body.left > Zap.engine.game.width) {
+                    if(sprite.body.x > Zap.engine.game.width) {
+                        
                         sprite.x -= this.width;
                         break;
                     }
