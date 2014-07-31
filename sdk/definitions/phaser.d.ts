@@ -3891,6 +3891,7 @@ declare module Phaser {
         constructor(game: Phaser.Game, x: number, y: number, key?: any, frame?: any);
 
         entity: Zapcoder.Entities.Entity;
+        group: Phaser.Group;
         alive: boolean;
         anchor: Phaser.Point;
         angle: number;
