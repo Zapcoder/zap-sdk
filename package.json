@@ -8,7 +8,7 @@
     "gulp-concat": "~2.1.7",
     "gulp-connect": "~1.0.7",
     "gulp-tsc": "~0.5.0",
-    "minimist": "~0.0.8",
+    "minimist": "~0.2.1",
     "mkdirp": "~0.3.5",
     "node-dir": "~0.1.5",
     "prompt": "~0.2.12",
